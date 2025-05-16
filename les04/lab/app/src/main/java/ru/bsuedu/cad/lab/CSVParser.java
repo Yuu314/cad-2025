@@ -11,56 +11,41 @@ import java.util.Locale;
 import org.springframework.stereotype.Component;
 
 
-
 public class CSVParser implements Parser {
-    public List<Product> parse(String text)
-    {
-        System.out.println();
-        List<Product> productsList = new ArrayList<>();
+   public CSVParser() {
 
-        String[] lines = text.split("\n");
-        for (int i = 1; i < lines.length; i++)
-        {
-            String[] params = lines[i].split(",");
-            productsList.add(new Product(
-                stringToInteger(params[0]), 
-                params[1], 
-                params[2], 
-                stringToInteger(params[3]), 
-                stringToDecimal(params[4]),
-                stringToInteger(params[5]),
-                params[6],
-                stringToCalendar(params[7]),
-                stringToCalendar(params[8])));
-        }
-        return productsList;
-            
-    }
+   }
 
-    public Calendar stringToCalendar(String dateString)
-    {   
-        try{
-            Calendar cal = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-            cal.setTime(sdf.parse(dateString));
-            return cal;
-        }
-        catch (ParseException e)
-        {
-            return null; // нулевое год месяц день вписать
-        }
-        
-    }
+   public List<Product> parse(String text) {
 
-    public BigDecimal stringToDecimal(String priceString)
-    {
-        return new BigDecimal(priceString);
-        
-    }
+      List<Product> productsList = new ArrayList();
+      String[] lines = text.split("\n");
 
-    public Integer stringToInteger(String numberString)
-    {
-        return Integer.parseInt(numberString);
-    }
-    
+      for(int i = 1; i < lines.length; ++i) {
+         String[] params = lines[i].split(",");
+         productsList.add(new Product(this.stringToInteger(params[0]), params[1], params[2], this.stringToInteger(params[3]), this.stringToDecimal(params[4]), this.stringToInteger(params[5]), params[6], this.stringToCalendar(params[7]), this.stringToCalendar(params[8])));
+      }
+
+      return productsList;
+   }
+
+   public Calendar stringToCalendar(String dateString) {
+      try {
+         Calendar cal = Calendar.getInstance();
+         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+         cal.setTime(sdf.parse(dateString));
+         return cal;
+      } catch (ParseException var4) {
+         return null;
+      }
+   }
+
+   public BigDecimal stringToDecimal(String priceString) {
+      return new BigDecimal(priceString);
+   }
+
+   public Integer stringToInteger(String numberString) {
+      return Integer.parseInt(numberString);
+   }
 }
+

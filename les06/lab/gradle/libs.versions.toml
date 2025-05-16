@@ -4,9 +4,13 @@
 [versions]
 guava = "33.3.1-jre"
 junit-jupiter = "5.11.1"
-spring-context = "6.2.2"
+spring-context="6.2.2"
+spring-jdbc = "6.2.2"
+h2 = "2.3.232"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 spring-context = { module = "org.springframework:spring-context", version.ref = "spring-context"}
+spring-jdbc = { module = "org.springframework:spring-jdbc", version.ref = "spring-jdbc" }
+h2 = { module = "com.h2database:h2", version.ref = "h2" }

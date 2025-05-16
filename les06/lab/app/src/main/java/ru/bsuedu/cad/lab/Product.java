@@ -4,30 +4,25 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 
 public class Product {
-    public int product_id;
-    public String name;
-    public String description;
-    public int category_id;
-    public BigDecimal price;
-    public int stock_quantity;
-    public String image_url;
-    public Calendar created_at;
-    public Calendar updated_at;
+   public int productId;
+   public String name;
+   public String description;
+   public int categoryId;
+   public BigDecimal price;
+   public int stockQuantity;
+   public String imageUrl;
+   public Calendar createdAt;
+   public Calendar updatedAt;
 
-    
-
-    public Product(int product_id, String name, String description, int category_id, BigDecimal price, int stock_quantity, String image_url, Calendar created_at, Calendar updated_at)
-    {
-        this.product_id = product_id;
-        this.name = name;
-        this.description = description;
-        this.category_id = category_id;
-        this.price = price;
-        this.stock_quantity = stock_quantity;
-        this.image_url = image_url;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-
-    }
-
+   public Product(int productId, String name, String description, int categoryId, BigDecimal price, int stockQuantity, String imageUrl, Calendar createdAt, Calendar updatedAt) {
+      this.productId = productId;
+      this.name = name;
+      this.description = description;
+      this.categoryId = categoryId;
+      this.price = price;
+      this.stockQuantity = stockQuantity;
+      this.imageUrl = imageUrl;
+      this.createdAt = createdAt;
+      this.updatedAt = updatedAt;
+   }
 }

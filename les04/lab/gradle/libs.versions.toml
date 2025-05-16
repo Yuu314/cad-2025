@@ -4,7 +4,7 @@
 [versions]
 guava = "33.3.1-jre"
 junit-jupiter = "5.11.1"
-spring-context = "6.2.2"
+spring-context="6.2.2"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }

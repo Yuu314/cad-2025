@@ -1,67 +1,29 @@
 package ru.bsuedu.cad.lab;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.io.PrintStream;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-@Component("consoleRenderer")
-public class ConsoleTableRenderer  implements Renderer{
-    // final private ProductProvider productProvider;
-    // final private CategoryProvider categoryProvider;
 
-    // public ConsoleTableRenderer(ProductProvider productProvider, CategoryProvider categoryProvider) {
-    //     this.productProvider = productProvider;
-    //     this.categoryProvider = categoryProvider;
-    // }
+@Component("renderer")
+public class ConsoleTableRenderer implements Renderer {
+   private final Provider<Product> provider;
 
-    final private Provider<Product> productProvider;
-    final private Provider<Category> categoryProvider;
-    public ConsoleTableRenderer(@Qualifier("productProvider") Provider<Product> productProvider, @Qualifier("categoryProvider") Provider<Category> categoryProvider) 
-    {
-        this.productProvider = productProvider;
-        this.categoryProvider = categoryProvider;
-    }
+   public ConsoleTableRenderer(Provider<Product> provider1) {
+      this.provider = provider1;
+   }
 
+   public void render() {
+      List<Product> productsList = this.provider.getEntitees();
+      System.out.println("-----------------------------------------------------------------------------------------");
 
-    public void render()
-    {
-        
-        List<Product> productsList = productProvider.getItems(Product.class, 0);
-        List<Category> categoriesList = categoryProvider.getItems(Category.class, 1);
-        System.out.println("---------------------------------------------------------");
-        for (int i = 0; i < productsList.size(); i++)
-        {
-            System.out.println("| " + productsList.get(i).product_id + " | "
-                                    + productsList.get(i).name + " | "
-                                    + productsList.get(i).description + " | "
-                                    + productsList.get(i).category_id + " | "
-                                    + productsList.get(i).price + " | "
-                                    + productsList.get(i).stock_quantity + " | "
-                                    + productsList.get(i).image_url + " | "
-                                    + calendarToString(productsList.get(i).created_at) + " | "
-                                    + calendarToString(productsList.get(i).updated_at) + " | ");
-            System.out.println("---------------------------------------------------------");
-        }
-        
-        System.out.println();
-        System.out.println("---------------------------------------------------------");
-        for (int i = 0; i < categoriesList.size(); i++)
-        {
-            System.out.println("| " + categoriesList.get(i).product_id + " | "
-                                    + categoriesList.get(i).name + " | "
-                                    + categoriesList.get(i).description + " | ");
-            System.out.println("---------------------------------------------------------");
-        }
+      for(int i = 0; i < productsList.size(); ++i) {
+         PrintStream var10000 = System.out;
+         int var10001 = ((Product)productsList.get(i)).productId;
+         var10000.println("|" + var10001 + " | " + ((Product)productsList.get(i)).name + " | " + ((Product)productsList.get(i)).description + " | " + ((Product)productsList.get(i)).categoryId + " | " + String.valueOf(((Product)productsList.get(i)).price) + " | " + ((Product)productsList.get(i)).stockQuantity + " | " + ((Product)productsList.get(i)).imageUrl + " | " + String.valueOf(((Product)productsList.get(i)).createdAt) + " | " + String.valueOf(((Product)productsList.get(i)).updatedAt) + " | ");
+         System.out.println("-----------------------------------------------------------------------------------------");
+      }
 
-
-    }
-
-    public String calendarToString(Calendar dateCalendar){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.format(dateCalendar.getTime());
-    }
-
+   }
 }

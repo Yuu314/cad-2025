@@ -7,71 +7,40 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.xml.crypto.Data;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-
 import jakarta.annotation.PostConstruct;
-
 
 @Component("reader")
 public class ResourceFileReader implements Reader {
+   
+   @PostConstruct
+   public void init() {
+      Date cur = new Date();
+      SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+      String currentDateTime = dateFormat. format(cur);
+      System.out.println(currentDateTime);
+   }
 
-    // SPeL
-    // @Value("#{propertyProvider.fileName}")
-    private String path;
+   //@Value("#{propertyProvider.fileName}")
+   private String path;
 
-    // Конструктор
-    public ResourceFileReader(PropertyProvider propertyProvider){
-        path = propertyProvider.getFileName();
-    }
+   public ResourceFileReader(PropertyProvider propertyProvider) {
+      path = propertyProvider.getFileName();
+   }
 
-    
+   public String read() {
+      Resource resource = new ClassPathResource("product.csv");
 
-    @PostConstruct
-    public void init() {
-        Date currentTime = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-        String currentDateTime = dateFormat.format(currentTime);
-        System.out.println(currentDateTime);
-    }
-
-    public String read(){
-        
-        Resource resource = new ClassPathResource(path);
-        
-        try {
-            return new String(Files.readAllBytes(Paths.get(resource.getURI())));
-
-            // StringBuffer text = new StringBuffer("");
-            // String line;
-            
-            // while (true){
-
-            //     line = buffReader.readLine();
-            //     if (line == null) break;
-            //     text.append(line);
-            //     text.append("\n");
-
-            // }
-            
-            
-            // return text.toString();
-        }
-        catch (FileNotFoundException e){
-            e.printStackTrace();
-            return null;
-        }
-        catch (IOException e){
-            e.printStackTrace();
-            return null;
-        }
-        
-        
-    } 
-
-    
+      try {
+         return new String(Files.readAllBytes(Paths.get(resource.getURI())));
+      } catch (FileNotFoundException var3) {
+         var3.printStackTrace();
+         return null;
+      } catch (IOException var4) {
+         var4.printStackTrace();
+         return null;
+      }
+   }
 }

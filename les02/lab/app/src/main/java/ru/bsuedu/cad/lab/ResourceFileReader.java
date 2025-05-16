@@ -4,49 +4,26 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-
-
 public class ResourceFileReader implements Reader {
-    
-    private String path = "product.csv";
+   private String path = "product.csv";
 
-    public String read(){
-        
-        Resource resource = new ClassPathResource(path);
-        
-        try {
-            return new String(Files.readAllBytes(Paths.get(resource.getURI())));
+   public ResourceFileReader() {
+   }
 
-            // StringBuffer text = new StringBuffer("");
-            // String line;
-            
-            // while (true){
+   public String read() {
+      Resource resource = new ClassPathResource(this.path);
 
-            //     line = buffReader.readLine();
-            //     if (line == null) break;
-            //     text.append(line);
-            //     text.append("\n");
-
-            // }
-            
-            
-            // return text.toString();
-        }
-        catch (FileNotFoundException e){
-            e.printStackTrace();
-            return null;
-        }
-        catch (IOException e){
-            e.printStackTrace();
-            return null;
-        }
-        
-        
-    } 
-
-    
+      try {
+         return new String(Files.readAllBytes(Paths.get(resource.getURI())));
+      } catch (FileNotFoundException var3) {
+         var3.printStackTrace();
+         return null;
+      } catch (IOException var4) {
+         var4.printStackTrace();
+         return null;
+      }
+   }
 }

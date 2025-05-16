@@ -1,39 +1,25 @@
 package ru.bsuedu.cad.lab;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.io.PrintStream;
 import java.util.List;
 
-public class ConsoleTableRenderer  implements Renderer{
-    final private ProductProvider provider;
+public class ConsoleTableRenderer implements Renderer {
+   private final ProductProvider provider;
 
-    public ConsoleTableRenderer(ProductProvider provider) {
-        this.provider = provider;
-    }
+   public ConsoleTableRenderer(ProductProvider provider) {
+      this.provider = provider;
+   }
 
-    public void render()
-    {
-        List<Product> productsList = provider.getProducts();
-        
-        System.out.println("---------------------------------------------------------");
-        for (int i = 0; i < productsList.size(); i++)
-        {
-            System.out.println("| " + productsList.get(i).productId + " | "
-                                    + productsList.get(i).name + " | "
-                                    + productsList.get(i).description + " | "
-                                    + productsList.get(i).categoryId + " | "
-                                    + productsList.get(i).price + " | "
-                                    + productsList.get(i).stockQuantity + " | "
-                                    + productsList.get(i).imageUrl + " | "
-                                    + calendarToString(productsList.get(i).createdAt) + " | "
-                                    + calendarToString(productsList.get(i).updatedAt) + " | ");
-            System.out.println("---------------------------------------------------------");
-        }
-    }
+   public void render() {
+      List<Product> productsList = this.provider.getProducts();
+      System.out.println("-----------------------------------------------------------------------------------------");
 
-    public String calendarToString(Calendar dateCalendar){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        return dateFormat.format(dateCalendar.getTime());
-    }
+      for(int i = 0; i < productsList.size(); ++i) {
+         PrintStream var10000 = System.out;
+         int var10001 = ((Product)productsList.get(i)).productId;
+         var10000.println("|" + var10001 + " | " + ((Product)productsList.get(i)).name + " | " + ((Product)productsList.get(i)).description + " | " + ((Product)productsList.get(i)).categoryId + " | " + String.valueOf(((Product)productsList.get(i)).price) + " | " + ((Product)productsList.get(i)).stockQuantity + " | " + ((Product)productsList.get(i)).imageUrl + " | " + String.valueOf(((Product)productsList.get(i)).createdAt) + " | " + String.valueOf(((Product)productsList.get(i)).updatedAt) + " | ");
+         System.out.println("-----------------------------------------------------------------------------------------");
+      }
 
+   }
 }
