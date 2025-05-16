@@ -1,0 +1,24 @@
+GET http://localhost:8080/petshop/api/order
+Authorization: Basic user:user
+
+
+###
+POST: http://localhost:8080/petshop/api/order
+Content-Type: application/json
+
+{
+    {
+        "customerId": 1,
+        "items": 
+        [
+            {
+                "productId": 1,
+                "quantity": 7
+            },
+            {
+                "productId": 2,
+                "quantity": 5
+            }
+        ]
+}
+}
