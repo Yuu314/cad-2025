@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать запчасть</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        /* Flash сообщения */
+        .flash-message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #2ecc71;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #e74c3c;
+        }
+
+        /* Форма */
+        form > div {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        input:required {
+            border-left: 3px solid #2ecc71;
+        }
+
+        input[type="number"] {
+            font-family: monospace;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .back-link:hover {
+            background-color: #f8f9fa;
+            text-decoration: underline;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Редактировать запчасть</h1>
+
+    <!-- Flash сообщения -->
+    <div th:if="${successMessage}" class="flash-message success">
+        ✅ <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="flash-message error">
+        ❌ <span th:text="${errorMessage}"></span>
+    </div>
+
+    <form th:action="@{/spareparts/update/{id}(id=${part.id})}" method="post">
+        <div>
+            <label for="partName">Название запчасти *</label>
+            <input type="text" id="partName" name="partName"
+                   th:value="${part.partName}" required>
+        </div>
+
+        <div>
+            <label for="partCost">Цена (руб.) *</label>
+            <input type="number" id="partCost" name="partCost"
+                   step="0.01" min="0"
+                   th:value="${part.partCost}" required>
+        </div>
+
+        <div>
+            <label for="quantityInStock">Количество на складе *</label>
+            <input type="number" id="quantityInStock" name="quantityInStock"
+                   min="0"
+                   th:value="${part.quantityInStock}" required>
+        </div>
+
+        <button type="submit">Сохранить изменения</button>
+    </form>
+
+    <a th:href="@{/spareparts}" class="back-link">← Вернуться к списку запчастей</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать клиента</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 40px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        /* Flash сообщения */
+        .flash-message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #2ecc71;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #e74c3c;
+        }
+
+        /* Форма */
+        form > div {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        input:required {
+            border-left: 3px solid #2ecc71;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .back-link:hover {
+            background-color: #f8f9fa;
+            text-decoration: underline;
+        }
+
+        /* Информация о клиенте */
+        .client-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3498db;
+        }
+
+        .client-info p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .client-info strong {
+            color: #2c3e50;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .container {
+                margin: 20px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Редактировать клиента</h1>
+
+    <!-- Информация о клиенте -->
+    <div class="client-info" th:if="${client}">
+        <p><strong>ID:</strong> <span th:text="${client.id}"></span></p>
+        <p><strong>Текущие данные:</strong>
+            <span th:text="${client.lastName} + ' ' + ${client.firstName} +
+                           (${client.patronymic} ? ' ' + ${client.patronymic} : '')"></span>
+        </p>
+        <p th:if="${client.phone}"><strong>Телефон:</strong> <span th:text="${client.phone}"></span></p>
+        <p th:if="${client.email}"><strong>Email:</strong> <span th:text="${client.email}"></span></p>
+    </div>
+
+    <!-- Flash сообщения -->
+    <div th:if="${successMessage}" class="flash-message success">
+        ✅ <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="flash-message error">
+        ❌ <span th:text="${errorMessage}"></span>
+    </div>
+
+    <form th:action="@{/clients/update/{id}(id=${client.id})}" method="post">
+        <div>
+            <label for="lastName">Фамилия *</label>
+            <input type="text" id="lastName" name="lastName"
+                   th:value="${client.lastName}"
+                   placeholder="Введите фамилию" required>
+        </div>
+
+        <div>
+            <label for="firstName">Имя *</label>
+            <input type="text" id="firstName" name="firstName"
+                   th:value="${client.firstName}"
+                   placeholder="Введите имя" required>
+        </div>
+
+        <div>
+            <label for="patronymic">Отчество</label>
+            <input type="text" id="patronymic" name="patronymic"
+                   th:value="${client.patronymic}"
+                   placeholder="Введите отчество (если есть)">
+        </div>
+
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email"
+                   th:value="${client.email}"
+                   placeholder="email@example.com">
+        </div>
+
+        <div>
+            <label for="phone">Телефон *</label>
+            <input type="text" id="phone" name="phone"
+                   th:value="${client.phone}"
+                   placeholder="+7 (XXX) XXX-XX-XX" required>
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-top: 30px;">
+            <button type="submit" style="flex: 2;">Сохранить изменения</button>
+            <a th:href="@{/clients}" class="back-link" style="flex: 1; text-align: center;">Отмена</a>
+        </div>
+    </form>
+
+    <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
+        <small style="color: #7f8c8d;">
+            * Поля, обязательные для заполнения<br>
+            Формат телефона: +7 (XXX) XXX-XX-XX или 8XXXXXXXXXX
+        </small>
+    </div>
+</div>
+</body>
+</html>

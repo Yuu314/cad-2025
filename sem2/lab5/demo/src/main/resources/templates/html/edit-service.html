@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование услуги — Автосервис</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .auth-info {
+            text-align: right;
+            padding: 15px 30px;
+            background-color: #ecf0f1;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .auth-info a {
+            color: #3498db;
+            text-decoration: none;
+            margin-left: 15px;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .auth-info a:hover {
+            background-color: #dfe6e9;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .flash-message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid;
+        }
+
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #2ecc71;
+        }
+
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #e74c3c;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            flex-wrap: wrap;
+        }
+
+        .navigation a {
+            text-decoration: none;
+            color: #3498db;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: white;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .navigation a:hover {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .edit-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+
+        .time-inputs {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .time-inputs .time-group {
+            flex: 1;
+        }
+
+        .time-inputs .separator {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .current-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #9b59b6;
+        }
+
+        .current-info p {
+            margin: 5px 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-save {
+            background-color: #9b59b6;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-save:hover {
+            background-color: #8e44ad;
+        }
+
+        .btn-cancel {
+            background-color: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background-color: #6c7b7d;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-info">
+    <span sec:authorize="isAuthenticated()">
+        Вы вошли как: <strong sec:authentication="name"></strong> |
+        <a href="/logout">Выйти</a>
+    </span>
+    <span sec:authorize="!isAuthenticated()">
+        <a href="/login">Войти в систему</a>
+    </span>
+</div>
+
+<div class="container">
+    <!-- Flash сообщения -->
+    <div th:if="${successMessage}" class="flash-message flash-success">
+        ✅ <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="flash-message flash-error">
+        ❌ <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Навигация -->
+    <div class="navigation">
+        <a href="/">На главную</a>
+        <a href="/services">Назад к услугам</a>
+        <a href="/clients">Клиенты</a>
+        <a href="/spareparts">Запчасти</a>
+        <a href="/suppliers">Поставщики</a>
+        <a href="/cars">Автомобили</a>
+    </div>
+
+    <h1>Редактирование услуги</h1>
+
+    <div class="edit-form">
+        <!-- Информация о текущей услуге -->
+        <div class="current-info" th:if="${service}">
+            <p><strong>Текущие данные:</strong></p>
+            <p>Название: <strong th:text="${service.serviceName}"></strong></p>
+            <p>Стоимость: <strong th:text="${#numbers.formatDecimal(service.cost, 1, 2) + ' руб.'}"></strong></p>
+            <p>Время выполнения: <strong th:text="${service.getExecutionTime()}"></strong></p>
+        </div>
+
+        <h2>Изменить данные услуги</h2>
+        <form th:action="@{/services/update/{id}(id=${service.id})}" method="post">
+            <div class="form-group">
+                <label for="serviceName">Название услуги <span class="required">*</span></label>
+                <input type="text" id="serviceName" name="serviceName"
+                       th:value="${service.serviceName}"
+                       placeholder="Замена масла" required>
+                <small>Например: Замена масла, Диагностика двигателя</small>
+            </div>
+            <div class="form-group">
+                <label for="cost">Стоимость (руб.) <span class="required">*</span></label>
+                <input type="number" id="cost" name="cost"
+                       th:value="${service.cost}"
+                       step="0.01" min="0" placeholder="1500.00" required>
+                <small>Например: 1500.00</small>
+            </div>
+            <div class="form-group">
+                <label>Время выполнения</label>
+                <div class="time-inputs">
+                    <div class="time-group">
+                        <input type="number" name="executionHours"
+                               th:value="${service.executionHours}"
+                               min="0" max="24" placeholder="Часы">
+                        <small>Часы</small>
+                    </div>
+                    <div class="separator">:</div>
+                    <div class="time-group">
+                        <input type="number" name="executionMinutes"
+                               th:value="${service.executionMinutes}"
+                               min="0" max="59" placeholder="Минуты">
+                        <small>Минуты (0-59)</small>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="description">Описание услуги</label>
+                <textarea id="description" name="description"
+                          th:text="${service.description}"
+                          placeholder="Подробное описание услуги..."></textarea>
+                <small>Необязательное поле</small>
+            </div>
+            <div class="button-group">
+                <button type="submit" class="btn-save">Сохранить изменения</button>
+                <a href="/services" class="btn-cancel">Отмена</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 Автосервис "JavaCarService". Лабораторная работа по Spring Boot и PostgreSQL.</p>
+        <p>Редактирование данных услуги</p>
+    </div>
+</div>
+</body>
+</html>

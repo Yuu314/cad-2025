@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование автомобиля — Автосервис</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .auth-info {
+            text-align: right;
+            padding: 15px 30px;
+            background-color: #ecf0f1;
+            font-size: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .auth-info a {
+            color: #3498db;
+            text-decoration: none;
+            margin-left: 15px;
+            padding: 8px 15px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .auth-info a:hover {
+            background-color: #dfe6e9;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .flash-message {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border-left: 4px solid;
+        }
+
+        .flash-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #2ecc71;
+        }
+
+        .flash-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #e74c3c;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+            flex-wrap: wrap;
+        }
+
+        .navigation a {
+            text-decoration: none;
+            color: #3498db;
+            padding: 10px 20px;
+            border-radius: 5px;
+            background-color: white;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .navigation a:hover {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .edit-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .form-group small {
+            display: block;
+            margin-top: 5px;
+            color: #7f8c8d;
+            font-size: 0.85rem;
+        }
+
+        .current-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f39c12;
+        }
+
+        .current-info p {
+            margin: 5px 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-save {
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-save:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-cancel {
+            background-color: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+
+        .btn-cancel:hover {
+            background-color: #6c7b7d;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+<div class="auth-info">
+    <span sec:authorize="isAuthenticated()">
+        Вы вошли как: <strong sec:authentication="name"></strong> |
+        <a href="/logout">Выйти</a>
+    </span>
+    <span sec:authorize="!isAuthenticated()">
+        <a href="/login">Войти в систему</a>
+    </span>
+</div>
+
+<div class="container">
+    <!-- Flash сообщения -->
+    <div th:if="${successMessage}" class="flash-message flash-success">
+        ✅ <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="flash-message flash-error">
+        ❌ <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Навигация -->
+    <div class="navigation">
+        <a href="/">На главную</a>
+        <a href="/cars">Назад к автомобилям</a>
+        <a href="/clients">Клиенты</a>
+        <a href="/spareparts">Запчасти</a>
+        <a href="/suppliers">Поставщики</a>
+    </div>
+
+    <h1>Редактирование автомобиля</h1>
+
+    <div class="edit-form">
+        <!-- Информация о текущем автомобиле -->
+        <div class="current-info" th:if="${car}">
+            <p><strong>Текущие данные:</strong></p>
+            <p>Гос. номер: <strong th:text="${car.licensePlate}"></strong></p>
+            <p>Марка/модель: <strong th:text="${car.brand + ' ' + car.model}"></strong></p>
+            <p>Владелец: <strong th:text="${car.client.lastName + ' ' + car.client.firstName}"></strong></p>
+        </div>
+
+        <h2>Изменить данные автомобиля</h2>
+        <form th:action="@{/cars/update/{id}(id=${car.id})}" method="post">
+            <div class="form-group">
+                <label for="clientId">Владелец <span class="required">*</span></label>
+                <select id="clientId" name="clientId" required>
+                    <option value="">-- Выберите клиента --</option>
+                    <option th:each="client : ${clients}"
+                            th:value="${client.id}"
+                            th:selected="${client.id == car.client.id}"
+                            th:text="${client.lastName + ' ' + client.firstName + ' (' + client.phone + ')'}">
+                    </option>
+                </select>
+                <small>Выберите владельца автомобиля из списка клиентов</small>
+            </div>
+            <div class="form-group">
+                <label for="licensePlate">Гос. номер <span class="required">*</span></label>
+                <input type="text" id="licensePlate" name="licensePlate"
+                       th:value="${car.licensePlate}"
+                       placeholder="А123БВ77" required>
+                <small>Формат: А123БВ77 или A123BC77</small>
+            </div>
+            <div class="form-group">
+                <label for="brand">Марка <span class="required">*</span></label>
+                <input type="text" id="brand" name="brand"
+                       th:value="${car.brand}"
+                       placeholder="Toyota" required>
+                <small>Например: Toyota, BMW, Lada</small>
+            </div>
+            <div class="form-group">
+                <label for="model">Модель <span class="required">*</span></label>
+                <input type="text" id="model" name="model"
+                       th:value="${car.model}"
+                       placeholder="Camry" required>
+                <small>Например: Camry, X5, Vesta</small>
+            </div>
+            <div class="form-group">
+                <label for="vin">VIN-номер</label>
+                <input type="text" id="vin" name="vin"
+                       th:value="${car.vin}"
+                       placeholder="JTDKB20U997123456" maxlength="17">
+                <small>17 символов, необязательное поле</small>
+            </div>
+            <div class="form-group">
+                <label for="yearOfManufacture">Год выпуска</label>
+                <input type="number" id="yearOfManufacture" name="yearOfManufacture"
+                       th:value="${car.yearOfManufacture}"
+                       min="1900" max="2025" placeholder="2020">
+                <small>Например: 2020</small>
+            </div>
+            <div class="button-group">
+                <button type="submit" class="btn-save">Сохранить изменения</button>
+                <a href="/cars" class="btn-cancel">Отмена</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 Автосервис "JavaCarService". Лабораторная работа по Spring Boot и PostgreSQL.</p>
+        <p>Редактирование данных автомобиля</p>
+    </div>
+</div>
+</body>
+</html>
